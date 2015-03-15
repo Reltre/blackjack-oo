@@ -1,6 +1,8 @@
 require 'pry'
 
 module Hand
+
+  BLACKJACK_VALUE = 21
   
   def show_hand
     puts "-----#{name}'s Hand-----"
@@ -10,14 +12,14 @@ module Hand
 
   def total
     result = hand.inject(0) { |sum,card| sum += Card::VALUES[card.face_value] }
-    if result > 21 && ace_count > 0
+    if result > BLACKJACK_VALUE && ace_count > 0
       result = handle_aces(result, ace_count)
     end
     result
   end
 
   def handle_aces(result,num_of_aces)
-    while num_of_aces > 0 && result > 21
+    while num_of_aces > 0 && result > BLACKJACK_VALUE
       result -= 10
       num_of_aces -= 1
     end
@@ -33,7 +35,7 @@ module Hand
   end
 
   def is_busted?
-   self.total > 21
+   self.total > BLACKJACK_VALUE
   end
 
   def say_busted
@@ -41,7 +43,7 @@ module Hand
   end
 
   def blackjack?
-   total == 21 && hand.size == 2
+   total == BLACKJACK_VALUE && hand.size == 2
   end
 end
 
@@ -118,6 +120,8 @@ end
 
 class Deck
   attr_accessor :cards
+
+  HIT_MIN = 17
 
   def initialize
     @cards = []
@@ -240,13 +244,13 @@ class BlackJack
 
   def dealer_turn
     dealer.is_turn = true
-    while dealer.total < 17
+    while dealer.total < Dealer::HIT_MIN
       dealer.add_card(deck)
       sleep(1)
       display_game
       break if dealer.is_busted? 
     end
-    display_game if dealer.total >= 17
+    display_game if dealer.total >= Dealer::HIT_MIN
     dealer.say_busted if dealer.is_busted?
   end
 end
