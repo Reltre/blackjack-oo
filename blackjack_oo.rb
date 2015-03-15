@@ -9,10 +9,9 @@ module Hand
   end
 
   def total
-    result = 
-    hand.inject(0) { |sum,card| sum += Card::VALUES[card.face_value] }
+    result = hand.inject(0) { |sum,card| sum += Card::VALUES[card.face_value] }
     if result > 21 && ace_count > 0
-      result = handle_aces(result,ace_count)
+      result = handle_aces(result, ace_count)
     end
     result
   end
@@ -56,7 +55,6 @@ class Player
     @name = name
     @hand = []
   end
-
 end
 
 class Dealer
@@ -124,12 +122,16 @@ class Deck
 
   def initialize
     @cards = []
-    number_of_decks = [2,3,4,5].sample
-    number_of_decks.times { generate_deck }
-    shuffle_deck!
+    combine_decks
+    shuffle_decks!
   end
 
-  def shuffle_deck!
+  def combine_decks
+    number_of_decks = [2,3,4,5].sample
+    number_of_decks.times { cards << generate_deck }
+  end
+
+  def shuffle_decks!
     cards.shuffle!
   end
 
@@ -217,7 +219,8 @@ class BlackJack
   def player_turn
     begin
       puts "Hit or Stay"
-      answer = gets.chomp.downcase 
+      answer = gets.chomp.downcase
+      puts "Please type hit or stay."; next if !['hit','stay'].include?(answer) 
       player.add_card(deck) if answer == 'hit'
       sleep(1)
       display_game
