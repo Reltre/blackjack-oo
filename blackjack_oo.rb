@@ -149,26 +149,27 @@ end
 
 class BlackJack
   attr_accessor :deck, :dealer, :player
+  
   def initialize
     @deck = Deck.new
     @dealer = Dealer.new
-    @dealer.add_card(deck)
-    @dealer.add_card(deck)
     puts "Please enter your name:"
     @player = Player.new(gets.chomp)
-    @player.add_card(deck)
-    @player.add_card(deck)
+  end
+
+  def deal_cards
+    player.add_card(deck)
+    player.add_card(deck)
+    dealer.add_card(deck)
+    dealer.add_card(deck)
   end
 
   def reset
     deck = Deck.new
-    dealer.hand = []
     dealer.is_turn = false
+    dealer.hand = []
     player.hand = []
-    dealer.add_card(deck)
-    dealer.add_card(deck)
-    player.add_card(deck)
-    player.add_card(deck)
+    deal_cards
   end
 
   def display_game
@@ -178,6 +179,7 @@ class BlackJack
   end
 
   def play
+    deal_cards
     display_game
     if player.blackjack? || dealer.blackjack?
       declare_winner(blackjack_comparision)
