@@ -114,7 +114,6 @@ class Card
   def to_s
     "#{face_value} of #{suit}"
   end
-
 end
 
 class Deck
@@ -128,7 +127,7 @@ class Deck
 
   def combine_decks
     number_of_decks = [2,3,4,5].sample
-    number_of_decks.times { cards << generate_deck }
+    number_of_decks.times { generate_deck }
   end
 
   def shuffle_decks!
@@ -137,7 +136,7 @@ class Deck
 
   def generate_deck
     Card::SUITS.each do |suit| 
-       Card::VALUES.keys.each do |value|
+      Card::VALUES.keys.each do |value|
         cards << Card.new(value,suit)
       end
     end
@@ -216,11 +215,19 @@ class BlackJack
     end
   end
 
+  def hit_or_stay
+    puts "Hit or Stay"
+    answer = gets.chomp.downcase
+    until answer == 'hit' || answer == 'stay'
+      puts "Please say whether you would like to Hit or Stay."
+      answer = gets.chomp.downcase
+    end
+    answer
+  end
+
   def player_turn
     begin
-      puts "Hit or Stay"
-      answer = gets.chomp.downcase
-      puts "Please type hit or stay."; next if !['hit','stay'].include?(answer) 
+      answer = hit_or_stay
       player.add_card(deck) if answer == 'hit'
       sleep(1)
       display_game
@@ -247,6 +254,10 @@ game = BlackJack.new
 begin
   game.play
   puts "Would you like to play another round" 
-  answer = gets.chomp.downcase
+  answer = gets.chomp.downcase 
+  while !['yes','yea','y','no','nope','n'].include?(answer) 
+    puts "Please say whether you would like to play another round."
+    answer = get.chomp.downcase
+  end  
   game.reset if ['yes','yea','y'].include?(answer) 
 end until ['no','nope','n'].include?(answer) 
